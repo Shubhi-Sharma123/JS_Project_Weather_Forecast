@@ -1,0 +1,103 @@
+Certainly! This JavaScript code snippet is designed to fetch and display the weather information for a city entered by the user in a search box. The code uses the OpenWeatherMap API to get the weather data and updates the webpage with the relevant information. Here's a step-by-step explanation of how this code works:
+
+### HTML Elements
+The code interacts with the following HTML elements:
+- `searchbox`: An input field where the user types the city name.
+- `searchbtn`: A button that the user clicks to initiate the search.
+- `.city`, `.temp`, `.humidity`, `.wind`, `.typeweather`: Elements that display the fetched weather data.
+
+### JavaScript Code
+
+1. **checkwheather Function**:
+   ```javascript
+   async function checkwheather() {
+       let searchbox = document.getElementById("searchbox").value.trim();
+       let res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchbox}&appid=740f85f5dcd4077ed0e1afaec2f82063&units=metric`);
+       let data = await res.json();
+       console.log(data);
+   ```
+
+   - **Fetching Data**: The function begins by fetching the value from the `searchbox` and trimming any extra whitespace.
+   - **API Call**: It makes an asynchronous request to the OpenWeatherMap API using the city name. The API key is included in the URL, along with a parameter to get the temperature in Celsius (`units=metric`).
+   - **Parsing Response**: The response from the API is parsed to JSON format.
+
+2. **Updating the HTML Elements**:
+   ```javascript
+       document.querySelector(".city").innerHTML = data.name;
+       document.querySelector(".temp").innerHTML = `${Math.round(data.main.temp)}°C`;
+       document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+       document.querySelector(".wind").innerHTML = data.wind.speed + " meter/sec";
+   ```
+
+   - **City**: Updates the city name.
+   - **Temperature**: Updates the temperature, rounded to the nearest integer.
+   - **Humidity**: Updates the humidity percentage.
+   - **Wind Speed**: Updates the wind speed in meters per second.
+
+3. **Updating Weather Icons and Background Images**:
+   ```javascript
+       let weathertype = document.querySelector(".typeweather");
+       let weathericon = weathertype.querySelectorAll("p");
+
+       if (data.weather[0].main == "Rain") {
+           document.body.style.backgroundImage = "url('pic/rain2.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-cloud-rain" style="color: #235ab8;"></i>`;
+           weathericon[1].innerHTML = "Rain";
+       } else if (data.weather[0].main == "Smoke") {
+           document.body.style.backgroundImage = "url('pic/smoke.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-smog fa-beat" style="color: #1d52af;"></i>`;
+           weathericon[1].innerHTML = "Smoke";
+       } else if (data.weather[0].main == "Sunny") {
+           document.body.style.backgroundImage = "url('pic/sunny.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-sun fa-spin" style="color: #bfd70f;"></i>`;
+           weathericon[1].innerHTML = "Sunny";
+       } else if (data.weather[0].main == "Clouds") {
+           document.body.style.backgroundImage = "url('pic/cloud.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-cloud fa-beat" style="color: #114fbb;"></i>`;
+           weathericon[1].innerHTML = "Clouds";
+       } else if (data.weather[0].main == "Night") {
+           document.body.style.backgroundImage = "url('night image.jpg')";
+       } else if (data.weather[0].main == "Haze") {
+           document.body.style.backgroundImage = "url('pic/hazesky.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-cloud-sun fa-beat" style="color: #1c54b5;"></i>`;
+           weathericon[1].innerHTML = "Haze";
+       } else if (data.weather[0].main == "Clear") {
+           document.body.style.backgroundImage = "url('pic/clear1.jpg')";
+           weathericon[0].innerHTML = `<i class="fa-solid fa-sun fa-spin" style="color: #bfd70f;"></i>`;
+           weathericon[1].innerHTML = "Clear";
+       }
+   ```
+
+   - **Weather Types**: The code checks the weather type (e.g., Rain, Smoke, Sunny) and updates the background image and weather icon accordingly.
+
+4. **pressEnter Function**:
+   ```javascript
+   function pressEnter(event) {
+       if (event.keyCode === 13) {
+           checkwheather();
+       }
+   }
+   ```
+
+   - **Handling Enter Key Press**: This function listens for the Enter key press (keyCode 13) and triggers the `checkwheather` function when the Enter key is pressed.
+
+5. **Event Listeners**:
+   ```javascript
+   searchbtn.addEventListener("click", () => {
+       checkwheather();
+   });
+   searchbox.addEventListener("keypress", pressEnter);
+   ```
+
+   - **Click Event**: Adds an event listener to the search button (`searchbtn`). When the button is clicked, the `checkwheather` function is called.
+   - **Keypress Event**: Adds an event listener to the search box (`searchbox`). When a key is pressed, the `pressEnter` function is called to check if it's the Enter key and, if so, calls the `checkwheather` function.
+
+### Summary
+- The `checkwheather` function fetches weather data from the OpenWeatherMap API based on user input and updates the webpage.
+- The `pressEnter` function handles the Enter key press to trigger the weather check.
+- Event listeners are set up for both clicking the search button and pressing Enter in the search box.
+
+To ensure this code works correctly, make sure:
+- You have the appropriate HTML structure with the specified IDs and classes.
+- The FontAwesome library is included for the weather icons.
+- The image URLs used for the background images are valid and accessible.
